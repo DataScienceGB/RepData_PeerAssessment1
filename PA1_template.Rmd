@@ -1,8 +1,10 @@
 ---
-title: "Assesment 1"
+title: "PA1_template"
 author: "DataScienceGB"
 date: "10/06/2015"
-output: html_document
+output:
+  html_document:
+    self_contained: no
 ---
 
 ##Loading and preprocessing the data
