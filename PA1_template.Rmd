@@ -1,9 +1,10 @@
 ---
 title: "PA1_template"
 author: "DataScienceGB"
-date: "10/06/2015"
+date: "11/06/2015"
 output:
   html_document:
+    keep_md: yes
     self_contained: no
 ---
 
