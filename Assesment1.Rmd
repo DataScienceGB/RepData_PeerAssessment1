@@ -19,9 +19,6 @@ actdf=read.csv("./activity.csv",stringsAsFactors=F)
 
 #summarize steps by day
 act_grp=sqldf("select date, sum(steps) as Steps from actdf where steps!='NA' group by date")
-#convert to Date type for later use
-#act_grp$date=paste(act_grp$date,"00:00:00")
-#act_grp$date=strptime(act_grp$date,"%Y-%m-%d %H:%M:%S")
 
 ```
 ##What is mean total number of steps taken per day?
@@ -129,13 +126,15 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 #0,6 means sunday and saturday, therefore is_weekend=TRUE
 actdf_imputed$is_weekend=(strftime(as.Date(actdf_imputed$date),'%w') %in% c(0,6))
 #average steps by day
-act_week=sqldf("select date,(case is_weekend
+#average steps by day
+act_week=sqldf("select interval,(case is_weekend
                               when 1 then 'weekend'
                               else     'weekday'
                              end) as week_fact, avg(steps) as Steps 
                  from actdf_imputed 
-                 group by date,is_weekend"
+                 group by interval,is_weekend"
                )
+
 #converts new column to a factor
 act_week$week_fact=as.factor(act_week$week_fact)
 
@@ -144,3 +143,21 @@ act_week$week_fact=as.factor(act_week$week_fact)
 
 
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). 
+
+```{r}
+#load ggplot2
+library(ggplot2)
+
+#Create  weekday vs weekend comparission chart
+p<-ggplot(act_week,aes(x=interval,y=Steps))+
+            geom_line(color="blue",)+
+            facet_wrap(~ week_fact,ncol=1)+          
+            theme_bw(base_family="Arial")+
+            labs(y="Number of steps",x="Interval")+
+            theme(strip.background = element_rect(colour = "black", fill = "orange"))
+
+print(p)
+
+```
+
+During week days there is more activity in the morning, however weekends show more activity through mid day.
